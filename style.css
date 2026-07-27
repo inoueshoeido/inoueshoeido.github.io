@@ -87,3 +87,14 @@ footer {
 }
 a.mail { color: var(--accent); text-decoration: none; }
 .note { font-size: 0.85rem; color: var(--muted); }
+a.button {
+  display: inline-block;
+  background: var(--accent);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+a.button:hover { opacity: 0.85; }

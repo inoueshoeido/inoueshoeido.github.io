@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>40代の学習タイプ診断 スコアシート｜40代の学習科学</title>
+<meta name="description" content="10の質問に答えるだけで、あなたの学習タイプ（設計者・開拓者・内省者・紡ぎ手）が自動判定されます。連載「40代の学習科学」の診断シートです。">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #e8e8e8;
+    font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', 'Meiryo', sans-serif;
+    padding: 24px;
+  }
+
+  /* ── シート本体 ── */
+  .sheet {
+    width: 1200px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  /* ── ヘッダー ── */
+  .sheet-header {
+    background: #1C2B3A;
+    padding: 22px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left h1 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+  }
+  .header-left p {
+    font-size: 12px;
+    color: #8EAABB;
+    margin-top: 4px;
+  }
+  .header-badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    padding: 8px 18px;
+    text-align: center;
+  }
+  .header-badge .badge-label {
+    font-size: 10px;
+    color: #8EAABB;
+    letter-spacing: 0.08em;
+  }
+  .header-badge .badge-series {
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-top: 2px;
+  }
+
+  /* ── 本文エリア ── */
+  .sheet-body {
+    padding: 32px 40px 28px;
+  }
+
+  /* ── ヒント ── */
+  .hint-bar {
+    background: #F0F7FF;
+    border-left: 4px solid #1E88E5;
+    border-radius: 0 6px 6px 0;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .hint-bar strong { color: #1C2B3A; }
+
+  /* ── 設問テーブル ── */
+  .qa-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    font-size: 15px;
+  }
+  .qa-table thead tr {
+    background: #1C2B3A;
+  }
+  .qa-table thead th {
+    color: white;
+    padding: 11px 14px;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+  }
+  .qa-table thead th.th-q  { width: 52px; }
+  .qa-table thead th.th-theme { text-align: left; }
+  .qa-table thead th.th-ab { width: 90px; }
+
+  .qa-table tbody tr { border-bottom: 1px solid #EBEBEB; }
+  .qa-table tbody tr:nth-child(even) td { background: #FAFAFA; }
+  .qa-table tbody tr:hover td { background: #F0F7FF; transition: background 0.15s; }
+
+  .qa-table td {
+    padding: 11px 14px;
+    color: #333;
+    vertical-align: middle;
+  }
+  .qa-table td.td-q {
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    color: #1C2B3A;
+  }
+  .qa-table td.td-theme {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .star-q { color: #E65100; font-size: 11px; margin-left: 4px; vertical-align: middle; }
+  .axis-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-weight: bold;
+  }
+  .axis-tag.v { background: #E3F2FD; color: #1565C0; }  /* 縦軸 */
+  .axis-tag.h { background: #F3E5F5; color: #6A1B9A; }  /* 横軸 */
+
+  .qa-table td.td-ab { text-align: center; }
+
+  /* ── 選択ボタン ── */
+  .choice-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #D0D0D0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #AAAAAA;
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+  }
+  .choice-btn:hover { border-color: #1C2B3A; color: #1C2B3A; }
+  .choice-btn.sel-a {
+    background: #1C2B3A;
+    border-color: #1C2B3A;
+    color: #ffffff;
+  }
+  .choice-btn.sel-b {
+    background: #E65100;
+    border-color: #E65100;
+    color: #ffffff;
+  }
+
+  /* ── STEP section ── */
+  .steps-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+  .step-card {
+    border: 1.5px solid #E0E0E0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .step-head {
+    background: #1C2B3A;
+    color: white;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+  }
+  .step-body { padding: 16px 18px; }
+  .step-qs-note {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .step-qs-note span {
+    font-weight: bold;
+    color: #555;
+  }
+
+  .count-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    background: #F5F5F5;
+    border-radius: 6px;
+  }
+  .count-letter {
+    font-size: 18px;
+    font-weight: bold;
+    width: 22px;
+    text-align: center;
+  }
+  .count-letter.la { color: #1C2B3A; }
+  .count-letter.lb { color: #E65100; }
+  .count-num {
+    font-size: 26px;
+    font-weight: bold;
+    min-width: 32px;
+    text-align: center;
+    border-bottom: 2px solid #999;
+    line-height: 1.2;
+    padding-bottom: 2px;
+  }
+  .count-unit { font-size: 13px; color: #888; }
+  .count-sep { font-size: 18px; color: #CCC; margin: 0 6px; }
+
+  .rules {
+    background: #F9F9F9;
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .rule-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.4;
+  }
+  .rule-badge {
+    background: #1C2B3A;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .rule-badge.orange { background: #E65100; }
+  .rule-badge.gray   { background: #78909C; }
+
+  /* ── 最終結果 ── */
+  .result-box {
+    border: 2px solid #1C2B3A;
+    border-radius: 8px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #F8FAFB;
+  }
+  .result-icon { font-size: 22px; }
+  .result-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1C2B3A;
+    white-space: nowrap;
+  }
+  .result-value {
+    flex: 1;
+    font-size: 24px;
+    font-weight: bold;
+    color: #1C2B3A;
+    letter-spacing: 0.02em;
+  }
+  .result-value .result-en {
+    font-size: 13px;
+    font-weight: normal;
+    color: #888;
+    margin-left: 8px;
+  }
+  .result-value.pending {
+    font-size: 15px;
+    font-weight: bold;
+    color: #AAAAAA;
+  }
+  .result-options {
+    font-size: 12px;
+    color: #AAA;
+    white-space: nowrap;
+  }
+
+  /* ── フッター ── */
+  .sheet-footer {
+    border-top: 1px solid #EBEBEB;
+    padding: 12px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #BBBBBB;
+  }
+
+  /* ── 凡例 ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #666;
+    justify-content: flex-end;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+  .legend-dot.v-dot { background: #1E88E5; }
+  .legend-dot.h-dot { background: #8E24AA; }
+
+  /* ── フッターリンク ── */
+  .footer-link {
+    color: #1E88E5;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .footer-link:hover { text-decoration: underline; }
+
+  /* ── スマホ・タブレット対応 ── */
+  @media (max-width: 1260px) {
+    .sheet { width: 100%; max-width: 1200px; }
+  }
+  @media (max-width: 800px) {
+    body { padding: 12px; }
+    .sheet-header { padding: 16px 18px; flex-wrap: wrap; gap: 10px; }
+    .header-left h1 { font-size: 17px; }
+    .sheet-body { padding: 18px 16px 20px; }
+    .hint-bar { font-size: 12px; padding: 9px 12px; margin-bottom: 16px; }
+    .legend { justify-content: flex-start; flex-wrap: wrap; gap: 10px; font-size: 11px; }
+
+    /* 設問テーブル：余白と文字を詰める */
+    .qa-table { font-size: 13px; margin-bottom: 18px; }
+    .qa-table thead th { padding: 8px 6px; font-size: 11px; }
+    .qa-table thead th.th-q { width: 32px; }
+    .qa-table thead th.th-ab { width: 56px; }
+    .qa-table td { padding: 9px 6px; }
+    .qa-table td.td-q { font-size: 14px; }
+    .qa-table td.td-theme { font-size: 12.5px; }
+    .axis-tag { font-size: 9px; padding: 1px 4px; margin-left: 4px; }
+    .choice-btn { width: 34px; height: 34px; font-size: 13px; }
+
+    /* STEPカード：縦積み */
+    .steps-row { grid-template-columns: 1fr; gap: 12px; }
+    .step-head { font-size: 12px; padding: 9px 12px; }
+    .step-body { padding: 13px 14px; }
+    .count-num { font-size: 22px; }
+
+    /* 結果ボックス：縦積み */
+    .result-box { flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px 16px; }
+    .result-value { font-size: 21px; }
+    .result-value.pending { font-size: 14px; }
+    .result-options { font-size: 11px; white-space: normal; }
+    .sheet-footer { padding: 10px 16px; flex-direction: column; gap: 4px; align-items: flex-start; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ヘッダー -->
+  <div class="sheet-header">
+    <div class="header-left">
+      <h1>📋 スコア記入シート</h1>
+      <p>各質問のA・Bを選んで、下のSTEPで集計してください</p>
+    </div>
+    <div class="header-badge">
+      <div class="badge-label">連載</div>
+      <div class="badge-series">40代の学習科学</div>
+    </div>
+  </div>
+
+  <!-- 本文 -->
+  <div class="sheet-body">
+
+    <!-- ヒント -->
+    <div class="hint-bar">
+      <strong>使い方：</strong>
+      各質問のA・Bをクリックして選択 → STEP1・STEP2のカウントを確認 → 10問すべて選ぶと、下に<strong>あなたのタイプが自動表示</strong>されます
+    </div>
+
+    <!-- 凡例 -->
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot v-dot"></div><span>縦軸（動機）に使う設問</span></div>
+      <div class="legend-item"><div class="legend-dot h-dot"></div><span>横軸（処理スタイル）に使う設問</span></div>
+    </div>
+
+    <!-- 設問テーブル -->
+    <table class="qa-table">
+      <thead>
+        <tr>
+          <th class="th-q">Q</th>
+          <th class="th-theme">質問テーマ</th>
+          <th class="th-ab">A</th>
+          <th class="th-ab">B</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-q">1</td>
+          <td class="td-theme">新しいスキルを学ぶとき<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q1a" onclick="pick(1,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q1b" onclick="pick(1,'b')">B</span></td>
+        </tr>
+        <tr>
+          <td class="td-q">2</td>
+          <td class="td-theme">本を1冊読むとしたら<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q2a" onclick="pick(2,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q2b" onclick="pick(2,'b')">B</span></td>
+        </tr>
+        <tr>
+          <td class="td-q">3</td>
+          <td class="td-theme">学習の主な目的<span class="axis-tag v">縦軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q3a" onclick="pick(3,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q3b" onclick="pick(3,'b')">B</span></td>
+        </tr>
+        <tr>
+          <td class="td-q">4</td>
+          <td class="td-theme">学習計画を立てるとき<span class="axis-tag v">縦軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q4a" onclick="pick(4,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q4b" onclick="pick(4,'b')">B</span></td>
+        </tr>
+        <tr>
+          <td class="td-q">5</td>
+          <td class="td-theme">仕事での得意なこと<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q5a" onclick="pick(5,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q5b" onclick="pick(5,'b')">B</span></td>
+        </tr>
+        <tr>
+          <td class="td-q">6</td>
+          <td class="td-theme">学んだことを定着させるとき<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q6a" onclick="pick(6,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q6b" onclick="pick(6,'b')">B</span></td>
+        </tr>
+        <tr>
+          <td class="td-q">7</td>
+          <td class="td-theme">週末に学習時間が取れたら<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q7a" onclick="pick(7,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q7b" onclick="pick(7,'b')">B</span></td>
+        </tr>
+        <tr>
+          <td class="td-q">8</td>
+          <td class="td-theme">新しいテクノロジーへの向き合い方<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q8a" onclick="pick(8,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q8b" onclick="pick(8,'b')">B</span></td>
+        </tr>
+        <tr>
+          <td class="td-q">9</td>
+          <td class="td-theme">学習継続の原動力<span class="axis-tag v">縦軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q9a" onclick="pick(9,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q9b" onclick="pick(9,'b')">B</span></td>
+        </tr>
+        <tr>
+          <td class="td-q">10</td>
+          <td class="td-theme">理想の「学んだ状態」のゴール<span class="axis-tag v">縦軸</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q10a" onclick="pick(10,'a')">A</span></td>
+          <td class="td-ab"><span class="choice-btn" id="q10b" onclick="pick(10,'b')">B</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- STEP cards -->
+    <div class="steps-row">
+
+      <!-- STEP 1 縦軸 -->
+      <div class="step-card">
+        <div class="step-head">STEP 1 ｜ 縦軸（動機の軸）を計算する</div>
+        <div class="step-body">
+          <div class="step-qs-note">
+            <span>縦軸タグ</span> が付いた Q3・Q4・Q9・Q10 の回答を数えます
+          </div>
+          <div class="count-area">
+            <span class="count-letter la">A</span>
+            <span class="count-num" id="v-a">—</span>
+            <span class="count-unit">個</span>
+            <span class="count-sep">/</span>
+            <span class="count-letter lb">B</span>
+            <span class="count-num" id="v-b">—</span>
+            <span class="count-unit">個</span>
+          </div>
+          <div class="rules">
+            <div class="rule-row">
+              <span class="rule-badge">A が3個以上</span>
+              「成果・結果」重視タイプ
+            </div>
+            <div class="rule-row">
+              <span class="rule-badge orange">B が3個以上</span>
+              「探求・充実」重視タイプ
+            </div>
+            <div class="rule-row">
+              <span class="rule-badge gray">2 対 2</span>
+              中間タイプ（適応型）
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 横軸 -->
+      <div class="step-card">
+        <div class="step-head">STEP 2 ｜ 横軸（処理スタイルの軸）を計算する</div>
+        <div class="step-body">
+          <div class="step-qs-note">
+            <span>横軸タグ</span> が付いた Q1・Q2・Q5・Q6・Q7・Q8 の回答を数えます
+          </div>
+          <div class="count-area">
+            <span class="count-letter la">A</span>
+            <span class="count-num" id="h-a">—</span>
+            <span class="count-unit">個</span>
+            <span class="count-sep">/</span>
+            <span class="count-letter lb">B</span>
+            <span class="count-num" id="h-b">—</span>
+            <span class="count-unit">個</span>
+          </div>
+          <div class="rules">
+            <div class="rule-row">
+              <span class="rule-badge">A が4個以上</span>
+              「深堀り・体系化」タイプ
+            </div>
+            <div class="rule-row">
+              <span class="rule-badge orange">B が4個以上</span>
+              「広域・連結」タイプ
+            </div>
+            <div class="rule-row">
+              <span class="rule-badge gray">3 対 3</span>
+              中間タイプ（適応型）
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 最終結果 -->
+    <div class="result-box">
+      <span class="result-icon">📌</span>
+      <span class="result-label">あなたのタイプ：</span>
+      <div class="result-value pending" id="result-text">すべて選択してください（あと10問）</div>
+      <span class="result-options">① 設計者　② 開拓者　③ 内省者　④ 紡ぎ手</span>
+    </div>
+
+  </div><!-- /sheet-body -->
+
+  <!-- フッター -->
+  <div class="sheet-footer">
+    <span>40代の学習科学 | 学習タイプ診断</span>
+    <span>
+      <a href="https://note.com/shoeido/n/ne88d57b4f66b" target="_blank" rel="noopener" class="footer-link">各タイプの詳しい解説を読む（note）</a>
+    </span>
+  </div>
+
+</div><!-- /sheet -->
+
+<script>
+  const answers = {};
+
+  // 縦軸対象: Q3,4,9,10 / 横軸対象: Q1,2,5,6,7,8
+  const vAxis = [3,4,9,10];
+  const hAxis = [1,2,5,6,7,8];
+
+  function pick(q, choice) {
+    const already = answers[q] === choice;
+
+    // 両ボタンをリセット
+    document.getElementById(`q${q}a`).className = 'choice-btn';
+    document.getElementById(`q${q}b`).className = 'choice-btn';
+
+    if (!already) {
+      answers[q] = choice;
+      document.getElementById(`q${q}${choice}`).classList.add(
+        choice === 'a' ? 'sel-a' : 'sel-b'
+      );
+    } else {
+      delete answers[q];
+    }
+
+    updateCounts();
+  }
+
+  function updateCounts() {
+    let va=0, vb=0, ha=0, hb=0;
+    for (const [q, ch] of Object.entries(answers)) {
+      const n = parseInt(q);
+      if (vAxis.includes(n)) { ch==='a' ? va++ : vb++; }
+      if (hAxis.includes(n)) { ch==='a' ? ha++ : hb++; }
+    }
+
+    const anyV = vAxis.some(q => answers[q]);
+    const anyH = hAxis.some(q => answers[q]);
+
+    document.getElementById('v-a').textContent = anyV ? va : '—';
+    document.getElementById('v-b').textContent = anyV ? vb : '—';
+    document.getElementById('h-a').textContent = anyH ? ha : '—';
+    document.getElementById('h-b').textContent = anyH ? hb : '—';
+
+    updateResult(va, vb, ha, hb);
+  }
+
+  function updateResult(va, vb, ha, hb) {
+    const el = document.getElementById('result-text');
+    const total = Object.keys(answers).length;
+
+    // 10問すべて回答するまでは案内を表示
+    if (total < 10) {
+      el.className = 'result-value pending';
+      el.textContent = `すべて選択してください（あと${10 - total}問）`;
+      return;
+    }
+
+    // 縦軸：Aが3個以上=成果・結果 / Bが3個以上=探求・充実 / 2対2=中間
+    const v = va >= 3 ? 'seika' : (vb >= 3 ? 'tankyu' : 'mid');
+    // 横軸：Aが4個以上=深堀り・体系化 / Bが4個以上=広域・連結 / 3対3=中間
+    const h = ha >= 4 ? 'fukabori' : (hb >= 4 ? 'kouiki' : 'mid');
+
+    let name = '', en = '';
+    if (v === 'mid' || h === 'mid') {
+      name = '適応型（状況によってタイプが切り替わる）';
+    } else if (v === 'seika' && h === 'fukabori') {
+      name = '① 設計者タイプ'; en = 'Architect';
+    } else if (v === 'seika' && h === 'kouiki') {
+      name = '② 開拓者タイプ'; en = 'Explorer';
+    } else if (v === 'tankyu' && h === 'fukabori') {
+      name = '③ 内省者タイプ'; en = 'Reflector';
+    } else {
+      name = '④ 紡ぎ手タイプ'; en = 'Connector';
+    }
+
+    el.className = 'result-value';
+    el.innerHTML = en ? `${name}<span class="result-en">${en}</span>` : name;
+  }
+</script>
+</body>
+</html>

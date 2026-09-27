@@ -60,6 +60,8 @@
     color: #ffffff;
     margin-top: 2px;
   }
+  a.header-badge { text-decoration: none; display: block; transition: background 0.18s, border-color 0.18s; }
+  a.header-badge:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.45); }
 
   /* ── 本文エリア ── */
   .sheet-body {
@@ -375,10 +377,10 @@
       <h1>📋 スコア記入シート</h1>
       <p>各質問のA・Bを選んで、下のSTEPで集計してください</p>
     </div>
-    <div class="header-badge">
+    <a class="header-badge" href="https://note.com/shoeido" target="_blank" rel="noopener">
       <div class="badge-label">連載</div>
       <div class="badge-series">40代の学習科学</div>
-    </div>
+    </a>
   </div>
 
   <!-- 本文 -->

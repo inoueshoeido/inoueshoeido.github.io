@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>勉強法プロファイル自己診断｜40代の学習科学</title>
+<meta name="description" content="18の質問に答えるだけで、動機・継続・集中・アウトプット・PKM・AI活用の6軸から、いま着手すべき学習課題が自動判定されます。連載「40代の学習科学」の診断シートです。">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #e8e8e8;
+    font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', 'Meiryo', sans-serif;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ── シート本体 ── */
+  .sheet {
+    width: 1200px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  /* ── ヘッダー ── */
+  .sheet-header {
+    background: #1C2B3A;
+    padding: 22px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left h1 { font-size: 20px; font-weight: bold; color: #ffffff; letter-spacing: 0.05em; }
+  .header-left p { font-size: 12px; color: #8EAABB; margin-top: 4px; }
+  .header-badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    padding: 8px 18px;
+    text-align: center;
+  }
+  .header-badge .badge-label { font-size: 10px; color: #8EAABB; letter-spacing: 0.08em; }
+  .header-badge .badge-series { font-size: 13px; font-weight: bold; color: #ffffff; margin-top: 2px; }
+
+  .sheet-body { padding: 32px 40px 28px; }
+
+  /* ── ヒント ── */
+  .hint-bar {
+    background: #F0F7FF;
+    border-left: 4px solid #1E88E5;
+    border-radius: 0 6px 6px 0;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 22px;
+    line-height: 1.7;
+  }
+  .hint-bar strong { color: #1C2B3A; }
+
+  /* ── セクション見出し ── */
+  .sec-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #1C2B3A;
+    padding-bottom: 7px;
+    border-bottom: 2px solid #1C2B3A;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sec-title .num {
+    background: #1C2B3A; color: #fff; font-size: 11px;
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .sec-note { font-size: 12px; color: #888; font-weight: normal; margin-left: auto; }
+
+  /* ── 前提チェック ── */
+  .pre-wrap { margin-bottom: 26px; }
+  .pre-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px;
+    border: 1.5px solid #E0E0E0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 14px; color: #333; line-height: 1.5;
+  }
+  .pre-row .pre-q { flex: 1; }
+  .pre-row .pre-tag {
+    font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 3px;
+    background: #ECEFF1; color: #546E7A; white-space: nowrap;
+  }
+  .yn { display: flex; gap: 6px; flex-shrink: 0; }
+  .yn span {
+    width: 52px; padding: 7px 0; text-align: center;
+    border: 2px solid #D0D0D0; border-radius: 6px;
+    font-size: 13px; font-weight: bold; color: #AAA;
+    cursor: pointer; transition: all .18s; user-select: none;
+  }
+  .yn span:hover { border-color: #1C2B3A; color: #1C2B3A; }
+  .yn span.on-y { background: #1C2B3A; border-color: #1C2B3A; color: #fff; }
+  .yn span.on-n { background: #E65100; border-color: #E65100; color: #fff; }
+
+  .pre-alert {
+    display: none;
+    background: #FFF4E5;
+    border-left: 4px solid #E65100;
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    font-size: 13px; color: #444; line-height: 1.7;
+  }
+  .pre-alert.show { display: block; }
+  .pre-alert strong { color: #E65100; }
+
+  /* ── 設問テーブル ── */
+  .qa-table { width: 100%; border-collapse: collapse; margin-bottom: 26px; font-size: 15px; }
+  .qa-table thead tr { background: #1C2B3A; }
+  .qa-table thead th {
+    color: white; padding: 11px 14px; font-size: 13px; font-weight: bold; text-align: center;
+  }
+  .qa-table thead th.th-q { width: 68px; }
+  .qa-table thead th.th-theme { text-align: left; }
+  .qa-table thead th.th-c { width: 92px; }
+
+  .qa-table tbody tr { border-bottom: 1px solid #EBEBEB; }
+  .qa-table tbody tr:hover td { background: #F0F7FF; transition: background 0.15s; }
+  .qa-table td { padding: 11px 14px; color: #333; vertical-align: middle; }
+  .qa-table td.td-q { text-align: center; font-size: 15px; font-weight: bold; color: #1C2B3A; white-space: nowrap; }
+  .qa-table td.td-theme { font-size: 14px; line-height: 1.55; }
+  .qa-table td.td-c { text-align: center; }
+
+  /* 軸の区切り行 */
+  tr.axis-row td {
+    background: #F5F7F9 !important;
+    padding: 9px 14px;
+    font-size: 13px; font-weight: bold; color: #1C2B3A;
+  }
+  tr.axis-row .axis-ch { font-size: 11px; color: #888; font-weight: normal; margin-left: 8px; }
+
+  /* ── 選択ボタン ── */
+  .choice-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid #D0D0D0;
+    font-size: 15px; font-weight: bold; color: #AAAAAA;
+    cursor: pointer; transition: all 0.18s; user-select: none;
+  }
+  .choice-btn:hover { border-color: #1C2B3A; color: #1C2B3A; }
+  .choice-btn.on2 { background: #1C2B3A; border-color: #1C2B3A; color: #fff; }
+  .choice-btn.on1 { background: #78909C; border-color: #78909C; color: #fff; }
+  .choice-btn.on0 { background: #E65100; border-color: #E65100; color: #fff; }
+
+  /* ── スコア一覧 ── */
+  .scores { display: flex; flex-direction: column; gap: 9px; margin-bottom: 22px; }
+  .score-row { display: flex; align-items: center; gap: 14px; }
+  .score-name { width: 106px; font-size: 14px; font-weight: bold; color: #1C2B3A; flex-shrink: 0; }
+  .score-bar { flex: 1; height: 26px; background: #F0F0F0; border-radius: 5px; overflow: hidden; }
+  .score-fill { height: 100%; width: 0; background: #B0BEC5; border-radius: 5px; transition: width .3s, background .3s; }
+  .score-fill.lv-low  { background: #E65100; }
+  .score-fill.lv-mid  { background: #78909C; }
+  .score-fill.lv-high { background: #43A047; }
+  .score-num { width: 58px; text-align: right; font-size: 17px; font-weight: bold; color: #1C2B3A; flex-shrink: 0; }
+  .score-num small { font-size: 12px; color: #AAA; font-weight: normal; }
+  .score-judge { width: 84px; font-size: 12px; font-weight: bold; text-align: center; flex-shrink: 0; }
+  .score-judge.lv-low  { color: #E65100; }
+  .score-judge.lv-mid  { color: #78909C; }
+  .score-judge.lv-high { color: #43A047; }
+
+  /* ── 結果 ── */
+  .result-box {
+    border: 2px solid #1C2B3A;
+    border-radius: 8px;
+    padding: 18px 24px;
+    background: #F8FAFB;
+  }
+  .result-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .result-icon { font-size: 22px; }
+  .result-label { font-size: 15px; font-weight: bold; color: #1C2B3A; white-space: nowrap; }
+  .result-value { font-size: 25px; font-weight: bold; color: #1C2B3A; }
+  .result-value.pending { font-size: 15px; color: #AAAAAA; }
+  .result-why { font-size: 13px; color: #666; line-height: 1.7; margin-top: 10px; }
+  .result-why strong { color: #E65100; }
+  .result-next {
+    display: none;
+    margin-top: 14px; padding-top: 14px; border-top: 1px dashed #CFD8DC;
+    font-size: 14px; color: #333; line-height: 1.8;
+  }
+  .result-next.show { display: block; }
+  .result-next a { color: #1E88E5; font-weight: bold; text-decoration: none; }
+  .result-next a:hover { text-decoration: underline; }
+
+  .reset {
+    margin-top: 16px; text-align: right;
+  }
+  .reset button {
+    background: none; border: 1px solid #CFD8DC; border-radius: 6px;
+    color: #90A4AE; font-size: 12px; padding: 6px 16px; cursor: pointer;
+    font-family: inherit;
+  }
+  .reset button:hover { border-color: #90A4AE; color: #546E7A; }
+
+  /* ── フッター ── */
+  .sheet-footer {
+    border-top: 1px solid #EBEBEB;
+    padding: 12px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: #BBBBBB; gap: 10px; flex-wrap: wrap;
+  }
+  .footer-link { color: #1E88E5; text-decoration: none; font-weight: bold; }
+  .footer-link:hover { text-decoration: underline; }
+
+  /* ── スマホ・タブレット対応 ── */
+  @media (max-width: 1260px) {
+    .sheet { width: 100%; max-width: 1200px; }
+  }
+  @media (max-width: 800px) {
+    body { padding: 12px; }
+    .sheet-header { padding: 16px 18px; flex-wrap: wrap; gap: 10px; }
+    .header-left h1 { font-size: 17px; }
+    .sheet-body { padding: 18px 16px 20px; }
+    .hint-bar { font-size: 12px; padding: 9px 12px; margin-bottom: 16px; }
+
+    .pre-row { flex-wrap: wrap; gap: 10px; padding: 11px 12px; font-size: 13px; }
+    .pre-row .pre-q { flex: 1 1 100%; }
+    .yn span { width: 60px; }
+
+    .qa-table { font-size: 13px; margin-bottom: 18px; }
+    .qa-table thead th { padding: 8px 6px; font-size: 11px; }
+    .qa-table thead th.th-q { width: 44px; }
+    .qa-table thead th.th-c { width: 52px; }
+    .qa-table td { padding: 9px 5px; }
+    .qa-table td.td-q { font-size: 12px; }
+    .qa-table td.td-theme { font-size: 12.5px; }
+    .choice-btn { width: 32px; height: 32px; font-size: 13px; }
+
+    .score-row { gap: 8px; }
+    .score-name { width: 78px; font-size: 12.5px; }
+    .score-num { width: 46px; font-size: 15px; }
+    .score-judge { width: 58px; font-size: 11px; }
+
+    .result-box { padding: 16px; }
+    .result-value { font-size: 21px; }
+    .sheet-footer { padding: 10px 16px; flex-direction: column; gap: 4px; align-items: flex-start; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ヘッダー -->
+  <div class="sheet-header">
+    <div class="header-left">
+      <h1>📋 勉強法プロファイル自己診断</h1>
+      <p>18の質問に答えると、いま着手すべき1つの軸が自動で決まります</p>
+    </div>
+    <div class="header-badge">
+      <div class="badge-label">連載</div>
+      <div class="badge-series">40代の学習科学</div>
+    </div>
+  </div>
+
+  <div class="sheet-body">
+
+    <div class="hint-bar">
+      <strong>使い方：</strong>各設問で「◎ あてはまる（2点）／△ どちらとも言えない（1点）／✕ あてはまらない（0点）」を選んでください。
+      6軸それぞれが0〜6点で集計され、<strong>いちばん低い軸</strong>が着手点として表示されます。所要5分。<br>
+      正直に答えてください。良く見せようとすると、この診断は意味がなくなります。
+    </div>
+
+    <!-- 前提チェック -->
+    <div class="pre-wrap">
+      <div class="sec-title"><span class="num">STEP 0</span>前提チェック<span class="sec-note">ここが「いいえ」なら、6軸より先にこちらから</span></div>
+
+      <div class="pre-row">
+        <span class="pre-tag">第1層 脳</span>
+        <span class="pre-q">この2週間、7時間近く眠れた日が半分以上あった</span>
+        <span class="yn"><span id="p1y" onclick="pre(1,'y')">はい</span><span id="p1n" onclick="pre(1,'n')">いいえ</span></span>
+      </div>
+      <div class="pre-row">
+        <span class="pre-tag">第4層 人生</span>
+        <span class="pre-q">いま学んでいることが、稼ぐための学習か、そうでないか答えられる</span>
+        <span class="yn"><span id="p2y" onclick="pre(2,'y')">はい</span><span id="p2n" onclick="pre(2,'n')">いいえ</span></span>
+      </div>
+
+      <div class="pre-alert" id="pre-alert"></div>
+    </div>
+
+    <!-- 18問 -->
+    <div class="sec-title"><span class="num">STEP 1</span>6軸・18問<span class="sec-note">◎ 2点　／　△ 1点　／　✕ 0点</span></div>
+
+    <table class="qa-table">
+      <thead>
+        <tr>
+          <th class="th-q">#</th>
+          <th class="th-theme">設問</th>
+          <th class="th-c">◎</th>
+          <th class="th-c">△</th>
+          <th class="th-c">✕</th>
+        </tr>
+      </thead>
+      <tbody id="qbody"></tbody>
+    </table>
+
+    <!-- スコア -->
+    <div class="sec-title"><span class="num">STEP 2</span>軸ごとのスコア<span class="sec-note">0〜2 要着手／3〜4 改善余地／5〜6 良好</span></div>
+    <div class="scores" id="scores"></div>
+
+    <!-- 結果 -->
+    <div class="result-box">
+      <div class="result-head">
+        <span class="result-icon">📌</span>
+        <span class="result-label">いま着手する軸：</span>
+        <div class="result-value pending" id="result-text">すべて選択してください（あと18問）</div>
+      </div>
+      <div class="result-why" id="result-why"></div>
+      <div class="result-next" id="result-next"></div>
+    </div>
+
+    <div class="reset"><button onclick="resetAll()">選択をリセット</button></div>
+
+  </div><!-- /sheet-body -->
+
+  <div class="sheet-footer">
+    <span>40代の学習科学 | 勉強法プロファイル自己診断</span>
+    <span>
+      <a href="https://note.com/shoeido/m/mfa7a9eab6ad6" target="_blank" rel="noopener" class="footer-link">診断の解説と使い方を読む（note）</a>
+      ／
+      <a href="../" class="footer-link">学習タイプ診断はこちら</a>
+    </span>
+  </div>
+
+</div><!-- /sheet -->
+
+<script>
+  // 軸は優先順位順。左ほど下層に近い（同点なら左を選ぶ）
+  const AXES = [
+    { key:'motive', name:'動機', chap:'第3章',
+      link:{ t:'3-1 学習目的を4象限で整理する', u:'https://note.com/shoeido/n/nc9995bdd679f' },
+      qs:[ '学んでいる理由を、他人に30秒で説明できる',
+           'やる気が出ない日でも、とりあえず進む仕組みがある',
+           '学習内容を、自分で選んでいる（誰かに決められたものではない）' ] },
+    { key:'keep', name:'継続', chap:'第8章・第13章',
+      link:{ t:'8-1 習慣ループの設計', u:'https://note.com/shoeido/n/n1ba37a0b1b60' },
+      qs:[ '直近2週間で、予定した学習の7割以上を実行した',
+           '学習を始めるきっかけ（時間・場所・直前の行動）が決まっている',
+           '予定が崩れた週があっても、翌週には戻れている' ] },
+    { key:'focus', name:'集中', chap:'第9章・第10章',
+      link:{ t:'10-2 注意残余という厄介な現象', u:'https://note.com/shoeido/n/n2ce50d767649' },
+      qs:[ '学習中、スマホは物理的に手の届かない場所にある',
+           '60分以上まとまった学習ブロックが、週に2回以上ある',
+           '学習を始める直前に何をするかが決まっていて、立ち上がりに迷わない' ] },
+    { key:'output', name:'アウトプット', chap:'第5章',
+      link:{ t:'5-1「読む」より「書く」', u:'https://note.com/shoeido/n/ndc1796f9b4dd' },
+      qs:[ '学んだ内容を、書く・話す・作るのいずれかにしている',
+           '読んだ量より書いた量のほうが多い週が、月に1回以上ある',
+           '誰かに説明する予定が、学ぶ前から決まっている' ] },
+    { key:'pkm', name:'PKM', chap:'第15章',
+      link:{ t:'15-1 Zettelkastenと第二の脳', u:'https://note.com/shoeido/n/naea6724a1482' },
+      qs:[ '学んだことを保存する場所が、1つに決まっている',
+           '3ヶ月前に書いたメモを、5分以内に見つけられる',
+           '過去のメモ同士がつながって、新しい考えが出たことがある' ] },
+    { key:'ai', name:'AI活用', chap:'第14章',
+      link:{ t:'14-1 AIが「2シグマ問題」を解く', u:'https://note.com/shoeido/n/n23b617b97950' },
+      qs:[ 'AIに、週1回以上は学習の相談をしている',
+           'AIの答えが間違っていると気づいて、直したことがある',
+           'AIに任せる範囲と、自分でやる範囲を決めている' ] }
+  ];
+
+  const PRE = [
+    null,
+    { name:'睡眠', t:'第6章（睡眠）と第7章（運動）', u:'https://note.com/shoeido/m/mb0d1006353b1' },
+    { name:'目的', t:'19-1「幸福年収」の設計思想', u:'https://note.com/shoeido/n/nc4fdb0b410e5' }
+  ];
+
+  const answers = {};   // "0-1" → 2|1|0
+  const preAns = {};    // 1|2 → 'y'|'n'
+  const TOTAL = AXES.length * 3;
+
+  // ── 設問テーブルを組み立てる ──
+  (function build() {
+    const tb = document.getElementById('qbody');
+    let html = '';
+    AXES.forEach((ax, ai) => {
+      html += `<tr class="axis-row"><td colspan="5">軸${ai+1}｜${ax.name}<span class="axis-ch">${ax.chap}</span></td></tr>`;
+      ax.qs.forEach((q, qi) => {
+        const id = `${ai}-${qi}`;
+        html += `<tr>
+          <td class="td-q">${ai+1}-${qi+1}</td>
+          <td class="td-theme">${q}</td>
+          <td class="td-c"><span class="choice-btn" id="b${id}-2" onclick="pick('${id}',2)">◎</span></td>
+          <td class="td-c"><span class="choice-btn" id="b${id}-1" onclick="pick('${id}',1)">△</span></td>
+          <td class="td-c"><span class="choice-btn" id="b${id}-0" onclick="pick('${id}',0)">✕</span></td>
+        </tr>`;
+      });
+    });
+    tb.innerHTML = html;
+
+    const sc = document.getElementById('scores');
+    sc.innerHTML = AXES.map((ax, ai) => `
+      <div class="score-row">
+        <div class="score-name">${ai+1}. ${ax.name}</div>
+        <div class="score-bar"><div class="score-fill" id="f${ai}"></div></div>
+        <div class="score-num" id="n${ai}">–<small>/6</small></div>
+        <div class="score-judge" id="j${ai}"></div>
+      </div>`).join('');
+  })();
+
+  function pick(id, v) {
+    answers[id] = v;
+    [2,1,0].forEach(k => {
+      const el = document.getElementById(`b${id}-${k}`);
+      el.className = 'choice-btn' + (k === v ? ` on${k}` : '');
+    });
+    update();
+  }
+
+  function pre(n, v) {
+    preAns[n] = v;
+    document.getElementById(`p${n}y`).className = (v === 'y') ? 'on-y' : '';
+    document.getElementById(`p${n}n`).className = (v === 'n') ? 'on-n' : '';
+    updatePre();
+  }
+
+  function updatePre() {
+    const ng = [1,2].filter(n => preAns[n] === 'n');
+    const box = document.getElementById('pre-alert');
+    if (!ng.length) { box.className = 'pre-alert'; box.innerHTML = ''; return; }
+    box.className = 'pre-alert show';
+    box.innerHTML = '<strong>先にこちらから。</strong>'
+      + ng.map(n => `${PRE[n].name}が整っていない状態では、6軸を上げても効きにくくなります。`
+          + `まず <a href="${PRE[n].u}" target="_blank" rel="noopener" class="footer-link">${PRE[n].t}</a> へ。`).join('<br>');
+  }
+
+  function levelOf(s) {
+    if (s <= 2) return { k:'lv-low',  t:'要着手' };
+    if (s <= 4) return { k:'lv-mid',  t:'改善余地' };
+    return       { k:'lv-high', t:'良好' };
+  }
+
+  function update() {
+    const done = Object.keys(answers).length;
+
+    // 軸ごとの集計（3問すべて答えた軸だけ確定）
+    const scores = AXES.map((ax, ai) => {
+      const vals = [0,1,2].map(qi => answers[`${ai}-${qi}`]);
+      return vals.every(v => v !== undefined) ? vals.reduce((a,b)=>a+b,0) : null;
+    });
+
+    scores.forEach((s, ai) => {
+      const fill = document.getElementById(`f${ai}`);
+      const num  = document.getElementById(`n${ai}`);
+      const jd   = document.getElementById(`j${ai}`);
+      if (s === null) {
+        fill.style.width = '0'; fill.className = 'score-fill';
+        num.innerHTML = '–<small>/6</small>'; jd.textContent = ''; jd.className = 'score-judge';
+        return;
+      }
+      const lv = levelOf(s);
+      fill.style.width = (s / 6 * 100) + '%';
+      fill.className = 'score-fill ' + lv.k;
+      num.innerHTML = s + '<small>/6</small>';
+      jd.textContent = lv.t;
+      jd.className = 'score-judge ' + lv.k;
+    });
+
+    const rt = document.getElementById('result-text');
+    const rw = document.getElementById('result-why');
+    const rn = document.getElementById('result-next');
+
+    if (done < TOTAL) {
+      rt.className = 'result-value pending';
+      rt.textContent = `すべて選択してください（あと${TOTAL - done}問）`;
+      rw.textContent = '';
+      rn.className = 'result-next';
+      return;
+    }
+
+    // 最小値。同点は配列の先頭＝優先順位が先の軸を選ぶ
+    const min = Math.min(...scores);
+    const tied = scores.map((s,i)=>({s,i})).filter(o=>o.s===min).map(o=>o.i);
+    const pickIdx = tied[0];
+    const ax = AXES[pickIdx];
+
+    // 最低点が5以上なら、直すべき軸はない
+    if (min >= 5) {
+      rt.className = 'result-value';
+      rt.textContent = 'いまは、なし';
+      rw.innerHTML = `最も低い軸でも${min}点で、6軸すべてが良好です。`
+        + `<strong>新しい方法を足すより、いま続けていることを続けてください。</strong>`
+        + `次に測るのは3ヶ月後で十分です。`;
+      rn.className = 'result-next';
+      rn.innerHTML = '';
+      return;
+    }
+
+    rt.className = 'result-value';
+    rt.textContent = `${ax.name}（${min}点）`;
+
+    let why = `6軸のうち、${ax.name}が最も低い結果です。`;
+    if (tied.length > 1) {
+      const names = tied.map(i => AXES[i].name).join('・');
+      why = `${names} が同点（${min}点）です。<strong>左の軸ほど下層に近い</strong>ため、`
+          + `優先順位が先の「${ax.name}」から着手します。`;
+    }
+    rw.innerHTML = why;
+
+    rn.className = 'result-next show';
+    rn.innerHTML = `<strong>次に読む：</strong>`
+      + `<a href="${ax.link.u}" target="_blank" rel="noopener">${ax.link.t}</a>`
+      + `<br><span style="color:#888;font-size:13px;">1つの軸につき、まず1記事です。読んで、1つ実装して、3ヶ月後にまた測ってください。</span>`;
+  }
+
+  function resetAll() {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    [1,2].forEach(n => delete preAns[n]);
+    document.querySelectorAll('.choice-btn').forEach(el => el.className = 'choice-btn');
+    document.querySelectorAll('.yn span').forEach(el => el.className = '');
+    updatePre();
+    update();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  update();
+</script>
+</body>
+</html>

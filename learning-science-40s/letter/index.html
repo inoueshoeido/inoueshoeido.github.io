@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10年後の自分への手紙｜40代の学習科学</title>
+<meta name="description" content="3つの問いに答えるだけで、10年後の自分への手紙が清書されます。スクリーンショットして保存してください。連載「40代の学習科学」の最終回で紹介したワークシートです。">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #e8e8e8;
+    font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', 'Meiryo', sans-serif;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .sheet {
+    width: 1000px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  /* ── ヘッダー ── */
+  .sheet-header {
+    background: #1C2B3A;
+    padding: 22px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left h1 { font-size: 20px; font-weight: bold; color: #ffffff; letter-spacing: 0.05em; }
+  .header-left p { font-size: 12px; color: #8EAABB; margin-top: 4px; }
+  .header-badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    padding: 8px 18px;
+    text-align: center;
+  }
+  .header-badge .badge-label { font-size: 10px; color: #8EAABB; letter-spacing: 0.08em; }
+  .header-badge .badge-series { font-size: 13px; font-weight: bold; color: #ffffff; margin-top: 2px; }
+  a.header-badge { text-decoration: none; display: block; transition: background 0.18s, border-color 0.18s; }
+  a.header-badge:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.45); }
+
+  .sheet-body { padding: 32px 40px 28px; }
+
+  .hint-bar {
+    background: #F0F7FF;
+    border-left: 4px solid #1E88E5;
+    border-radius: 0 6px 6px 0;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+  .hint-bar strong { color: #1C2B3A; }
+
+  .sec-title {
+    font-size: 14px; font-weight: bold; color: #1C2B3A;
+    padding-bottom: 7px; border-bottom: 2px solid #1C2B3A;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sec-title .num { background: #1C2B3A; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; }
+  .sec-note { font-size: 12px; color: #888; font-weight: normal; margin-left: auto; }
+
+  /* ── 記入フォーム ── */
+  .date-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 18px; font-size: 14px; color: #555;
+  }
+  .date-row input {
+    font-family: inherit; font-size: 15px;
+    padding: 7px 12px; border: 1.5px solid #D8D8D8; border-radius: 6px; color: #333;
+  }
+  .date-row input:focus { outline: none; border-color: #1C2B3A; }
+
+  .q-block { margin-bottom: 20px; }
+  .q-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .q-no {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: bold; color: #fff;
+  }
+  .b1 .q-no { background: #78909C; }
+  .b2 .q-no { background: #1E88E5; }
+  .b3 .q-no { background: #43A047; }
+  .q-text { font-size: 17px; font-weight: bold; color: #1C2B3A; line-height: 1.45; }
+  .q-hint { font-size: 13px; color: #888; margin-top: 3px; line-height: 1.5; }
+  .b3 .q-hint { color: #43A047; font-weight: bold; }
+
+  textarea {
+    width: 100%; font-family: inherit; font-size: 15px; line-height: 1.7;
+    padding: 12px 14px; border: 1.5px solid #D8D8D8; border-radius: 8px;
+    color: #333; resize: vertical; background: #FCFCFC;
+  }
+  textarea:focus { outline: none; border-color: #1C2B3A; background: #fff; }
+  .b3 textarea { border-color: #A5D6A7; background: #F6FBF5; }
+  .b3 textarea:focus { border-color: #43A047; }
+
+  /* ── 清書（スクショ用） ── */
+  .shot-note {
+    background: #FFF4E5; border-left: 4px solid #E65100; border-radius: 0 6px 6px 0;
+    padding: 10px 16px; font-size: 13px; color: #444; line-height: 1.7; margin-bottom: 14px;
+  }
+  .shot-note strong { color: #E65100; }
+
+  .letter {
+    border: 2px solid #1C2B3A;
+    border-radius: 10px;
+    padding: 30px 34px;
+    background: #FFFFFF;
+  }
+  .letter-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: 12px; border-bottom: 2px solid #E0E0E0; margin-bottom: 22px;
+    gap: 12px; flex-wrap: wrap;
+  }
+  .letter-to { font-size: 22px; font-weight: bold; color: #1C2B3A; letter-spacing: .03em; }
+  .letter-date { font-size: 14px; color: #888; }
+
+  .lq { margin-bottom: 20px; }
+  .lq:last-child { margin-bottom: 0; }
+  .lq-t {
+    font-size: 14px; font-weight: bold; color: #fff;
+    display: inline-block; padding: 3px 12px; border-radius: 4px; margin-bottom: 8px;
+  }
+  .l1 .lq-t { background: #78909C; }
+  .l2 .lq-t { background: #1E88E5; }
+  .l3 .lq-t { background: #43A047; }
+  .lq-a {
+    font-size: 17px; line-height: 1.85; color: #222; white-space: pre-wrap;
+    padding-left: 2px; min-height: 1.85em;
+  }
+  .lq-a.empty { color: #C4C4C4; }
+  .l3 .lq-a { font-weight: bold; }
+
+  .letter-foot {
+    margin-top: 24px; padding-top: 12px; border-top: 1px dashed #D8D8D8;
+    font-size: 12px; color: #AAA; text-align: right;
+  }
+
+  .tools { margin-top: 16px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+  .tools button {
+    font-family: inherit; font-size: 13px; padding: 8px 18px;
+    border: 1.5px solid #1C2B3A; border-radius: 6px;
+    background: #fff; color: #1C2B3A; cursor: pointer; transition: all .18s;
+  }
+  .tools button:hover { background: #1C2B3A; color: #fff; }
+  .tools button.ghost { border-color: #CFD8DC; color: #90A4AE; }
+  .tools button.ghost:hover { background: #fff; border-color: #90A4AE; color: #546E7A; }
+  .copied { font-size: 13px; color: #43A047; font-weight: bold; align-self: center; display: none; }
+  .copied.show { display: inline; }
+
+  /* ── フッター ── */
+  .sheet-footer {
+    border-top: 1px solid #EBEBEB; padding: 12px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: #BBBBBB; gap: 10px; flex-wrap: wrap;
+  }
+  .footer-link { color: #1E88E5; text-decoration: none; font-weight: bold; }
+  .footer-link:hover { text-decoration: underline; }
+
+  /* ── スマホ ── */
+  @media (max-width: 1060px) {
+    .sheet { width: 100%; max-width: 1000px; }
+  }
+  @media (max-width: 700px) {
+    body { padding: 12px; }
+    .sheet-header { padding: 16px 18px; flex-wrap: wrap; gap: 10px; }
+    .header-left h1 { font-size: 17px; }
+    .sheet-body { padding: 18px 16px 20px; }
+    .hint-bar, .shot-note { font-size: 12px; padding: 9px 12px; }
+    .q-text { font-size: 15.5px; }
+    .letter { padding: 20px 18px; }
+    .letter-to { font-size: 19px; }
+    .lq-a { font-size: 15.5px; }
+    .tools { justify-content: stretch; }
+    .tools button { flex: 1; }
+    .sheet-footer { padding: 10px 16px; flex-direction: column; gap: 4px; align-items: flex-start; font-size: 10px; }
+  }
+
+  /* ── 印刷すると清書だけが出る ── */
+  @media print {
+    body { background: #fff; padding: 0; display: block; }
+    .sheet { width: 100%; box-shadow: none; border-radius: 0; }
+    .sheet-header, .sheet-footer, .hint-bar, .shot-note, .tools,
+    #form-area, .sec-title { display: none !important; }
+    .sheet-body { padding: 0; }
+    .letter { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="sheet-header">
+    <div class="header-left">
+      <h1>📮 10年後の自分への手紙</h1>
+      <p>3つの問いに答えると、下に清書が出ます。そこをスクリーンショットしてください</p>
+    </div>
+    <a class="header-badge" href="https://note.com/shoeido" target="_blank" rel="noopener">
+      <div class="badge-label">連載</div>
+      <div class="badge-series">40代の学習科学</div>
+    </a>
+  </div>
+
+  <div class="sheet-body">
+
+    <div class="hint-bar">
+      <strong>使い方：</strong>3つの問いに答えると、下の枠に清書された手紙が表示されます。所要10分。<br>
+      書いたら<strong>スクリーンショットを撮って保存</strong>し、<strong>年に1回だけ</strong>読み返してください。
+      入力内容はどこにも送信・保存されません。ページを閉じると消えます。
+    </div>
+
+    <!-- 記入 -->
+    <div id="form-area">
+      <div class="sec-title"><span class="num">STEP 1</span>記入する<span class="sec-note">3つだけ。長く書かなくていい</span></div>
+
+      <div class="date-row">
+        <label for="dt">記入日</label>
+        <input type="date" id="dt" oninput="render()">
+      </div>
+
+      <div class="q-block b1">
+        <div class="q-head">
+          <span class="q-no">①</span>
+          <span>
+            <div class="q-text">いま、何に時間を使っているか</div>
+            <div class="q-hint">事実だけ。週に何時間、何に使っているか。「忙しい」は事実ではない</div>
+          </span>
+        </div>
+        <textarea id="a1" rows="3" placeholder="例：平日は仕事に週50時間。学習は朝20分×4日。週末は家族と過ごす時間が中心。" oninput="render()"></textarea>
+      </div>
+
+      <div class="q-block b2">
+        <div class="q-head">
+          <span class="q-no">②</span>
+          <span>
+            <div class="q-text">10年後、何ができるようになっていたいか</div>
+            <div class="q-hint">資格名や肩書きではなく、できるようになっていたいこと</div>
+          </span>
+        </div>
+        <textarea id="a2" rows="3" placeholder="例：自分の専門を、専門外の人に伝わる言葉で説明できるようになっていたい。" oninput="render()"></textarea>
+      </div>
+
+      <div class="q-block b3">
+        <div class="q-head">
+          <span class="q-no">③</span>
+          <span>
+            <div class="q-text">そのために、今日始めることを1つ</div>
+            <div class="q-hint">1つだけ。2つ書かない</div>
+          </span>
+        </div>
+        <textarea id="a3" rows="2" placeholder="例：平日の朝7時20分から10分、前日読んだ内容を3行で書く。" oninput="render()"></textarea>
+      </div>
+    </div>
+
+    <!-- 清書 -->
+    <div class="sec-title"><span class="num">STEP 2</span>清書<span class="sec-note">この枠をスクリーンショット</span></div>
+
+    <div class="shot-note">
+      <strong>この下の枠を撮ってください。</strong>スマホなら枠に合わせて、PCなら範囲指定で。
+      印刷する場合は、このページを印刷すると<strong>この枠だけ</strong>が出ます。
+    </div>
+
+    <div class="letter" id="letter">
+      <div class="letter-head">
+        <span class="letter-to">10年後の自分へ</span>
+        <span class="letter-date" id="o-date">記入日 ————</span>
+      </div>
+
+      <div class="lq l1">
+        <span class="lq-t">① いま、何に時間を使っているか</span>
+        <div class="lq-a empty" id="o1">（ここに①の答えが入ります）</div>
+      </div>
+
+      <div class="lq l2">
+        <span class="lq-t">② 10年後、何ができるようになっていたいか</span>
+        <div class="lq-a empty" id="o2">（ここに②の答えが入ります）</div>
+      </div>
+
+      <div class="lq l3">
+        <span class="lq-t">③ そのために、今日始めることを1つ</span>
+        <div class="lq-a empty" id="o3">（ここに③の答えが入ります）</div>
+      </div>
+
+      <div class="letter-foot">40代の学習科学｜10年後の自分への手紙</div>
+    </div>
+
+    <div class="tools">
+      <span class="copied" id="copied">コピーしました</span>
+      <button onclick="copyText()">テキストをコピー</button>
+      <button onclick="window.print()">印刷 / PDFで保存</button>
+      <button class="ghost" onclick="clearAll()">入力をリセット</button>
+    </div>
+
+  </div><!-- /sheet-body -->
+
+  <div class="sheet-footer">
+    <span>40代の学習科学 | 10年後の自分への手紙</span>
+    <span>
+      <a href="https://note.com/shoeido/m/mfa7a9eab6ad6" target="_blank" rel="noopener" class="footer-link">この手紙の意味を読む（note）</a>
+      ／
+      <a href="../profile/" class="footer-link">勉強法プロファイル診断</a>
+      ／
+      <a href="../" class="footer-link">学習タイプ診断</a>
+    </span>
+  </div>
+
+</div><!-- /sheet -->
+
+<script>
+  const PH = ['（ここに①の答えが入ります）', '（ここに②の答えが入ります）', '（ここに③の答えが入ります）'];
+
+  // 記入日は今日を初期値にする
+  (function initDate() {
+    const d = new Date();
+    const p = n => String(n).padStart(2, '0');
+    document.getElementById('dt').value = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  })();
+
+  function fmtDate(v) {
+    if (!v) return '記入日 ————';
+    const [y, m, d] = v.split('-');
+    return `記入日 ${y}年${Number(m)}月${Number(d)}日`;
+  }
+
+  function render() {
+    document.getElementById('o-date').textContent = fmtDate(document.getElementById('dt').value);
+    [1, 2, 3].forEach(i => {
+      const v = document.getElementById('a' + i).value.trim();
+      const el = document.getElementById('o' + i);
+      el.textContent = v || PH[i - 1];
+      el.className = 'lq-a' + (v ? '' : ' empty');
+    });
+  }
+
+  function copyText() {
+    const v = i => document.getElementById('a' + i).value.trim() || '（未記入）';
+    const txt = [
+      '10年後の自分へ',
+      fmtDate(document.getElementById('dt').value),
+      '',
+      '① いま、何に時間を使っているか',
+      v(1),
+      '',
+      '② 10年後、何ができるようになっていたいか',
+      v(2),
+      '',
+      '③ そのために、今日始めることを1つ',
+      v(3),
+      '',
+      '40代の学習科学｜10年後の自分への手紙'
+    ].join('\n');
+
+    navigator.clipboard.writeText(txt).then(() => {
+      const c = document.getElementById('copied');
+      c.className = 'copied show';
+      setTimeout(() => { c.className = 'copied'; }, 2000);
+    });
+  }
+
+  function clearAll() {
+    [1, 2, 3].forEach(i => { document.getElementById('a' + i).value = ''; });
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  render();
+</script>
+</body>
+</html>

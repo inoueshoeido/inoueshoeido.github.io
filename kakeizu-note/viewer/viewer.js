@@ -978,7 +978,12 @@
         for (const rowGeneration of rowIndices) {
           const row = componentRows[rowGeneration];
           const neighborsOf = pass === 0 ? childrenOf : parentsOf;
-          row.forEach((block, blockIndex) => {
+          // 左→右のあと右→左にも流す(アプリの LayoutEngine と同じ。v1.10)
+          const sweep = [];
+          for (let i = 0; i < row.length; i++) sweep.push(i);
+          for (let i = row.length - 1; i >= 0; i--) sweep.push(i);
+          sweep.forEach((blockIndex) => {
+            const block = row[blockIndex];
             const desired = desiredCenter(block, neighborsOf, pass === 1, rowGeneration);
             if (desired === undefined) return;
             const width = blockWidth(block);

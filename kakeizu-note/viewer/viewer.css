@@ -132,6 +132,8 @@ main { max-width: 1400px; margin: 0 auto; padding: 8px 16px 24px; }
 .canvas .sublabel { font-size: 10px; fill: #8a8377; }
 .canvas.far .sublabel { display: none; }
 .canvas .frame { stroke: #8a8377; stroke-width: 1.2; }
+/* 強調(v1.12): 外側にもう1本、墨色(名前と同じ色)。太さではなく形で言う */
+.canvas .emphasis-frame { stroke: #333; }
 .canvas .frame.placeholder { stroke: #b4ada2; stroke-dasharray: 4 3; }
 .canvas .box { cursor: pointer; outline: none; }
 .canvas .box:hover .frame { stroke-width: 2; }

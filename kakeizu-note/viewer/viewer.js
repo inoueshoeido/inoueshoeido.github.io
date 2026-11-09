@@ -170,6 +170,8 @@
       orderHint: field(value, 'orderHint', asDouble, true),
       generationOffsetHint: field(value, 'generationOffsetHint', asInt, true),
       generationOffsetHintSetAt: field(value, 'generationOffsetHintSetAt', asDate, true),
+      // 強調(v1.12)。欄の無い JSON(1.11 以前の書き出し)は強調なし
+      isEmphasized: field(value, 'isEmphasized', asBool, true) === true,
     };
   }
 
@@ -313,6 +315,7 @@
         isPlaceholder: isUnnamed(person),
         isDeceased: !person.isLiving,
         sex: person.sex,
+        isEmphasized: person.isEmphasized,
       }));
     const relationships = [];
     for (const relationship of document.relationships) {
@@ -485,8 +488,14 @@
     const component = assignComponents(count, parentChildEdges, partnerEdges);
     const componentCount = maxOf(component, -1) + 1;
 
-    // Step 1: 世代割当
-    const generation = assignGenerations(count, component, parentChildEdges, partnerEdges);
+    // Step 1: 世代割当。実の親がいる人へ入る養親子の辺は、世代を決めるのに使わない(v1.12。docs/04)。
+    // ほかに位置を決めるつながりが無いときの位置合わせ(1-a の最後)にだけ使う
+    const hasBiologicalParent = new Array(count).fill(false);
+    for (const edge of parentChildEdges) if (edge.kind === 'biological') hasBiologicalParent[edge.child] = true;
+    const isAlignmentOnly = (edge) => edge.kind === 'adoptive' && hasBiologicalParent[edge.child];
+    const generation = assignGenerations(count, component,
+      parentChildEdges.filter((edge) => !isAlignmentOnly(edge)), partnerEdges,
+      parentChildEdges.filter(isAlignmentOnly));
 
     // Step 1.5: 連結成分の世代整合
     let appliedRowOffsets = new Array(componentCount).fill(0);
@@ -534,7 +543,10 @@
 
     // Step 2: 行内並び順
     const rowsByComponent = buildBlocks(persons, count, component, componentCount, generation, partnerEdges);
-    minimizeCrossings(rowsByComponent, persons, count, parentChildEdges);
+    // 隣の行に無い「位置合わせだけ」の養親子の辺は、並べ替えの物差しに入れない(v1.12)
+    const orderingEdges = parentChildEdges.filter((edge) =>
+      !(isAlignmentOnly(edge) && generation[edge.child] - generation[edge.parent] !== 1));
+    minimizeCrossings(rowsByComponent, persons, count, orderingEdges);
 
     // Step 3: 座標割当
     const { centerX, orderInRow } = assignCoordinates(metrics, rowsByComponent, count, generation,
@@ -575,8 +587,8 @@
     return component;
   }
 
-  function assignGenerations(count, component, parentChildEdges, partnerEdges) {
-    const generation = solveGenerationEqualities(count, parentChildEdges, partnerEdges);
+  function assignGenerations(count, component, parentChildEdges, partnerEdges, alignmentOnlyEdges) {
+    const generation = solveGenerationEqualities(count, parentChildEdges, partnerEdges, alignmentOnlyEdges || []);
 
     function relaxParentChild() {
       for (let i = 0; i < Math.max(1, count); i++) {
@@ -616,7 +628,7 @@
     return generation;
   }
 
-  function solveGenerationEqualities(count, parentChildEdges, partnerEdges) {
+  function solveGenerationEqualities(count, parentChildEdges, partnerEdges, alignmentOnlyEdges) {
     const parent = newArray(count, () => 0).map((_, i) => i);
     const offset = new Array(count).fill(0);
 
@@ -647,6 +659,7 @@
 
     for (const edge of parentChildEdges) unite(edge.parent, edge.child, 1);
     for (const edge of partnerEdges) unite(edge.a, edge.b, 0);
+    for (const edge of alignmentOnlyEdges) unite(edge.parent, edge.child, 1);
 
     const result = new Array(count);
     for (let i = 0; i < count; i++) result[i] = find(i).offset;
@@ -1058,6 +1071,53 @@
     }
 
     const dropLines = [];
+
+    // 親子の線は、端でない人の箱の上を通らない(v1.12。docs/04)。行を跨ぐ・同じ行・上の行の線は、
+    // 親の行の下で横へ折り、ブロックの隙間(夫婦の間は通さない)を縦に通って子の行の上へ。隙間が無ければ外を回る
+    const rowCenters = new Map();
+    for (let person = 0; person < count; person++) {
+      if (!rowCenters.has(generation[person])) rowCenters.set(generation[person], []);
+      rowCenters.get(generation[person]).push(centerX[person]);
+    }
+    for (const centers of rowCenters.values()) centers.sort(compareNumbers);
+    const laneHalfWidth = metrics.nodeWidth / 2 + 10;
+    function laneX(anchorX, childX, parentGeneration, childGeneration) {
+      if (childGeneration - parentGeneration === 1) return undefined;
+      const crossed = [];
+      if (childGeneration > parentGeneration) {
+        for (let row = parentGeneration + 1; row < childGeneration; row++) crossed.push(row);
+      } else {
+        for (let row = childGeneration; row <= parentGeneration; row++) crossed.push(row);
+      }
+      const isClear = (x) => crossed.every((row) =>
+        (rowCenters.get(row) || []).every((center) => Math.abs(center - x) >= laneHalfWidth));
+      if (childGeneration > parentGeneration && isClear(anchorX)) return undefined;
+      const candidates = [anchorX, childX];
+      let outerLeft = Number.MAX_VALUE;
+      let outerRight = -Number.MAX_VALUE;
+      for (const row of crossed) {
+        const centers = rowCenters.get(row) || [];
+        for (let i = 0; i + 1 < centers.length; i++) candidates.push((centers[i] + centers[i + 1]) / 2);
+        if (centers.length > 0) {
+          outerLeft = Math.min(outerLeft, centers[0]);
+          outerRight = Math.max(outerRight, centers[centers.length - 1]);
+        }
+      }
+      if (outerLeft <= outerRight) {
+        candidates.push(outerLeft - metrics.nodeWidth / 2 - metrics.blockGap / 2);
+        candidates.push(outerRight + metrics.nodeWidth / 2 + metrics.blockGap / 2);
+      }
+      let best;
+      for (const x of candidates) {
+        if (!isClear(x)) continue;
+        if (best === undefined) { best = x; continue; }
+        const cost = Math.abs(x - anchorX) + Math.abs(x - childX);
+        const bestCost = Math.abs(best - anchorX) + Math.abs(best - childX);
+        if (cost < bestCost || (cost === bestCost && x < best)) best = x;
+      }
+      return best;
+    }
+
     const parentLinks = newArray(count, () => []);
     for (const edge of parentChildEdges) {
       parentLinks[edge.child].push({ parent: edge.parent, kind: edge.kind, relationshipID: edge.relationshipID });
@@ -1084,6 +1144,7 @@
             child,
             relationshipID: links[0].relationshipID + '+' + links[1].relationshipID,
             parentGeneration: generation[links[0].parent],
+            parentBottomY: bottomY(links[0].parent),
           });
         } else {
           for (const link of links) {
@@ -1093,6 +1154,7 @@
               child,
               relationshipID: link.relationshipID,
               parentGeneration: generation[link.parent],
+              parentBottomY: bottomY(link.parent),
             });
           }
         }
@@ -1106,9 +1168,11 @@
         }
         for (const spec of specs) {
           const group = groups[index];
+          spec.laneX = laneX(spec.anchorX, centerX[child], spec.parentGeneration, generation[child]);
+          const busStart = spec.laneX !== undefined ? spec.laneX : spec.anchorX;
           group.drops.push(spec);
-          group.minX = Math.min(group.minX, spec.anchorX, centerX[child]);
-          group.maxX = Math.max(group.maxX, spec.anchorX, centerX[child]);
+          group.minX = Math.min(group.minX, busStart, centerX[child]);
+          group.maxX = Math.max(group.maxX, busStart, centerX[child]);
         }
       }
     }
@@ -1156,7 +1220,30 @@
         const childX = centerX[spec.child];
         const childTop = { x: childX, y: topY(spec.child) };
         const points = [{ x: spec.anchorX, y: spec.startY }];
-        if (Math.abs(spec.anchorX - childX) > 0.01) {
+        if (spec.laneX !== undefined) {
+          const lane = spec.laneX;
+          const detourY = spec.parentBottomY + metrics.rowGap / 4;
+          const route = [
+            { x: spec.anchorX, y: detourY }, { x: lane, y: detourY },
+            { x: lane, y: busY }, { x: childX, y: busY },
+          ];
+          for (const point of route) {
+            const last = points[points.length - 1];
+            if (!(Math.abs(point.x - last.x) < 0.01 && Math.abs(point.y - last.y) < 0.01)) points.push(point);
+          }
+          verticals.push({ groupIndex, x: spec.anchorX, topYValue: spec.startY, bottomYValue: detourY });
+          verticals.push({ groupIndex, x: lane, topYValue: Math.min(detourY, busY),
+            bottomYValue: Math.max(detourY, busY) });
+          verticals.push({ groupIndex, x: childX, topYValue: busY, bottomYValue: childTop.y });
+          if (Math.abs(lane - spec.anchorX) > 0.01) {
+            horizontals.push({ edgeIndex: edges.length, groupIndex, y: detourY,
+              minX: Math.min(spec.anchorX, lane), maxX: Math.max(spec.anchorX, lane) });
+          }
+          if (Math.abs(lane - childX) > 0.01) {
+            horizontals.push({ edgeIndex: edges.length, groupIndex, y: busY,
+              minX: Math.min(lane, childX), maxX: Math.max(lane, childX) });
+          }
+        } else if (Math.abs(spec.anchorX - childX) > 0.01) {
           points.push({ x: spec.anchorX, y: busY });
           points.push({ x: childX, y: busY });
           horizontals.push({ edgeIndex: edges.length, groupIndex, y: busY,
@@ -1189,7 +1276,8 @@
         if (merged.length === 0 || x - merged[merged.length - 1] >= minimumHopGap) merged.push(x);
       }
       if (merged.length > 0) {
-        edges[horizontal.edgeIndex].hops = merged.map((x) => ({ x, y: horizontal.y }));
+        edges[horizontal.edgeIndex].hops = edges[horizontal.edgeIndex].hops
+          .concat(merged.map((x) => ({ x, y: horizontal.y })));
       }
     }
 
@@ -1243,12 +1331,23 @@
           isPlaceholder: person ? person.isPlaceholder : false,
           isDeceased: person ? person.isDeceased : false,
           sex: person ? person.sex : 'unspecified',
+          isEmphasized: person ? person.isEmphasized : false,
         };
       }),
       lines: result.edges,
       width: result.width,
       height: result.height,
     };
+  }
+
+  /// 強調の二重の枠(v1.12)。**アプリの `EmphasisFrame` と同じ値**(golden の `emphasisFrame` で突き合わせる)
+  const EMPHASIS_FRAME = { outset: 3.5, lineWidth: 1.3, cornerRadius: 8 + 3.5 };
+
+  /// 外側の線の矩形(線の中心を通る。左上原点)
+  function emphasisFrameRect(box) {
+    const o = EMPHASIS_FRAME.outset;
+    return { x: box.x - o, y: box.y - o, width: box.width + o * 2, height: box.height + o * 2,
+      rx: EMPHASIS_FRAME.cornerRadius, strokeWidth: EMPHASIS_FRAME.lineWidth };
   }
 
   /// RenderPath.commands。ポリライン+飛越点 → 描画コマンド列
@@ -1501,10 +1600,18 @@
     for (const box of scene.boxes) {
       const x = box.x + MARGIN;
       const y = box.y + MARGIN;
-      const group = make('g', { class: 'box', tabindex: 0, role: 'button' });
+      const group = make('g', { class: box.isEmphasized ? 'box emphasized' : 'box', tabindex: 0, role: 'button' });
       const title = make('title');
-      title.textContent = visibleText(box.label) + (box.sublabel !== '' ? '、' + box.sublabel : '');
+      title.textContent = visibleText(box.label) + (box.sublabel !== '' ? '、' + box.sublabel : '')
+        + (box.isEmphasized ? '、強調' : '');
       group.appendChild(title);
+      if (box.isEmphasized) {
+        // 外側にもう1本、墨色の線(v1.12)。箱より先に置く(箱の塗りが内側を覆う)
+        const frame = emphasisFrameRect(box);
+        group.appendChild(make('rect', { x: frame.x + MARGIN, y: frame.y + MARGIN, width: frame.width,
+          height: frame.height, rx: frame.rx, fill: 'none', 'stroke-width': frame.strokeWidth,
+          class: 'emphasis-frame' }));
+      }
       const rect = make('rect', { x, y, width: box.width, height: box.height, rx: 8,
         fill: boxFillHex(box.sex, box.isDeceased), class: box.isPlaceholder ? 'frame placeholder' : 'frame' });
       group.appendChild(rect);
@@ -1758,7 +1865,7 @@
 
   const api = {
     MAX_FILE_BYTES, MESSAGES, parseExport, buildLayoutInput, layout, buildScene, prepare, pathCommands,
-    boxFillHex, renderSceneSVG, age, ageText, detailRows, dateText, countUndrawableRelationships,
+    boxFillHex, emphasisFrameRect, renderSceneSVG, age, ageText, detailRows, dateText, countUndrawableRelationships,
     roundHalfAwayFromZero, fitLabel, visibleText,
   };
   if (typeof module === 'object' && module && module.exports) {

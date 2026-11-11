@@ -1341,7 +1341,8 @@
   }
 
   /// 強調の二重の枠(v1.12)。**アプリの `EmphasisFrame` と同じ値**(golden の `emphasisFrame` で突き合わせる)
-  const EMPHASIS_FRAME = { outset: 3.5, lineWidth: 1.3, cornerRadius: 8 + 3.5 };
+  // v1.13: 案3(縁から 5pt・2.2pt・墨色)
+  const EMPHASIS_FRAME = { outset: 5, lineWidth: 2.2, cornerRadius: 8 + 5 };
 
   /// 外側の線の矩形(線の中心を通る。左上原点)
   function emphasisFrameRect(box) {

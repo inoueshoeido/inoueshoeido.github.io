@@ -1414,7 +1414,18 @@
     return ey - by - (reached ? 0 : 1);
   }
   /// { kind: 'exact', man, kazoe } | { kind: 'range', manMin, manMax, kazoe } | { kind: 'hidden' }
-  function age(birth, death, isLiving, today) {
+  /// 旧暦(明治5年まで)の月日では数えない(PartialDate.forCalculation。v1.14)。
+  /// アプリは明治より前を年の精度で保存するので、月日を持つ旧暦はv1.13までの「明治1〜5年」だけ
+  function forCalculation(date) {
+    if ((date.precision === 'exact' || date.precision === 'yearMonth')
+        && /^明治(元|[1-5])年/.test(date.original || '')) {
+      return { precision: 'year', year: date.year, original: date.original };
+    }
+    return date;
+  }
+  function age(rawBirth, rawDeath, isLiving, today) {
+    const birth = forCalculation(rawBirth);
+    const death = forCalculation(rawDeath);
     const end = isLiving
       ? { precision: 'exact', year: today.year, month: today.month, day: today.day }
       : death;
@@ -1450,7 +1461,9 @@
   }
 
   /// 詳細に出す日付(「1950年4月12日(昭和25年4月12日)」)。不明は undefined
-  function dateText(date) {
+  function dateText(rawDate) {
+    // 旧暦(明治5年まで)の月日は西暦の月日として書かない(アプリの Wareki.display と同じ。v1.14)
+    const date = forCalculation(rawDate);
     let text;
     const y = date.year;
     switch (date.precision) {

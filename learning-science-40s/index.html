@@ -100,7 +100,8 @@
   }
   .qa-table thead th.th-q  { width: 52px; }
   .qa-table thead th.th-theme { text-align: left; }
-  .qa-table thead th.th-ab { width: 90px; }
+  .qa-table thead th.th-theme { width: 28%; }
+  .qa-table thead th.th-ab { width: 33%; }
 
   .qa-table tbody tr { border-bottom: 1px solid #EBEBEB; }
   .qa-table tbody tr:nth-child(even) td { background: #FAFAFA; }
@@ -136,33 +137,44 @@
 
   .qa-table td.td-ab { text-align: center; }
 
-  /* ── 選択ボタン ── */
+  /* ── 選択ボタン（選択肢の文章つき） ── */
   .choice-btn {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    gap: 10px;
+    width: 100%;
+    min-height: 56px;
+    padding: 8px 12px;
+    border-radius: 8px;
     border: 2px solid #D0D0D0;
-    font-size: 14px;
-    font-weight: bold;
-    color: #AAAAAA;
+    background: #FFFFFF;
+    font-family: inherit;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #444;
+    text-align: left;
     cursor: pointer;
     transition: all 0.18s;
     user-select: none;
   }
-  .choice-btn:hover { border-color: #1C2B3A; color: #1C2B3A; }
-  .choice-btn.sel-a {
-    background: #1C2B3A;
-    border-color: #1C2B3A;
-    color: #ffffff;
+  .choice-btn .ab {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #D0D0D0;
+    font-size: 13px;
+    font-weight: bold;
+    color: #AAAAAA;
   }
-  .choice-btn.sel-b {
-    background: #E65100;
-    border-color: #E65100;
-    color: #ffffff;
-  }
+  .choice-btn:hover { border-color: #1C2B3A; }
+  .choice-btn:hover .ab { border-color: #1C2B3A; color: #1C2B3A; }
+  .choice-btn.sel-a { background: #1C2B3A; border-color: #1C2B3A; color: #FFFFFF; }
+  .choice-btn.sel-b { background: #E65100; border-color: #E65100; color: #FFFFFF; }
+  .choice-btn.sel-a .ab, .choice-btn.sel-b .ab { border-color: #FFFFFF; color: #FFFFFF; }
 
   /* ── STEP section ── */
   .steps-row {
@@ -351,7 +363,11 @@
     .qa-table td.td-q { font-size: 14px; }
     .qa-table td.td-theme { font-size: 12.5px; }
     .axis-tag { font-size: 9px; padding: 1px 4px; margin-left: 4px; }
-    .choice-btn { width: 34px; height: 34px; font-size: 13px; }
+    .qa-table thead { display: none; }
+    .qa-table tbody tr { display: grid; grid-template-columns: 30px 1fr; gap: 6px 4px; padding: 10px 0; }
+    .qa-table td { padding: 0 4px; background: transparent !important; }
+    .qa-table td.td-ab { grid-column: 1 / -1; }
+    .choice-btn { font-size: 13px; min-height: 48px; padding: 7px 10px; }
 
     /* STEPカード：縦積み */
     .steps-row { grid-template-columns: 1fr; gap: 12px; }
@@ -389,7 +405,7 @@
     <!-- ヒント -->
     <div class="hint-bar">
       <strong>使い方：</strong>
-      各質問のA・Bをクリックして選択 → STEP1・STEP2のカウントを確認 → 10問すべて選ぶと、下に<strong>あなたのタイプが自動表示</strong>されます
+      各質問で、近いほうの選択肢（A・B）をクリック → STEP1・STEP2のカウントを確認 → 10問すべて選ぶと、下に<strong>あなたのタイプが自動表示</strong>されます
     </div>
 
     <!-- 凡例 -->
@@ -403,7 +419,7 @@
       <thead>
         <tr>
           <th class="th-q">Q</th>
-          <th class="th-theme">質問テーマ</th>
+          <th class="th-theme">質問</th>
           <th class="th-ab">A</th>
           <th class="th-ab">B</th>
         </tr>
@@ -411,63 +427,63 @@
       <tbody>
         <tr>
           <td class="td-q">1</td>
-          <td class="td-theme">新しいスキルを学ぶとき<span class="axis-tag h">横軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q1a" onclick="pick(1,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q1b" onclick="pick(1,'b')">B</span></td>
+          <td class="td-theme">新しいスキルを学ぶとき、最初にすることは？<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q1a" onclick="pick(1,'a')"><span class="ab">A</span><span class="opt">全体のカリキュラムや体系を調べ、ロードマップを作る</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q1b" onclick="pick(1,'b')"><span class="ab">B</span><span class="opt">気になるところから手をつけ、全体像は後でつかんでいく</span></button></td>
         </tr>
         <tr>
           <td class="td-q">2</td>
-          <td class="td-theme">本を1冊読むとしたら<span class="axis-tag h">横軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q2a" onclick="pick(2,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q2b" onclick="pick(2,'b')">B</span></td>
+          <td class="td-theme">本を1冊読むとしたら、どちらに近い？<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q2a" onclick="pick(2,'a')"><span class="ab">A</span><span class="opt">1冊を丁寧に精読し、完全に理解してから次の本へ進む</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q2b" onclick="pick(2,'b')"><span class="ab">B</span><span class="opt">複数の本を並行して読み、ざっくりつなげながら進む</span></button></td>
         </tr>
         <tr>
           <td class="td-q">3</td>
-          <td class="td-theme">学習の主な目的<span class="axis-tag v">縦軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q3a" onclick="pick(3,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q3b" onclick="pick(3,'b')">B</span></td>
+          <td class="td-theme">学習の主な目的は何ですか？<span class="axis-tag v">縦軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q3a" onclick="pick(3,'a')"><span class="ab">A</span><span class="opt">仕事・収入・資格など、具体的な成果につなげたい</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q3b" onclick="pick(3,'b')"><span class="ab">B</span><span class="opt">純粋な好奇心・人生を豊かにしたい・自分自身を知りたい</span></button></td>
         </tr>
         <tr>
           <td class="td-q">4</td>
-          <td class="td-theme">学習計画を立てるとき<span class="axis-tag v">縦軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q4a" onclick="pick(4,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q4b" onclick="pick(4,'b')">B</span></td>
+          <td class="td-theme">学習計画を立てるとき、どちらに近い？<span class="axis-tag v">縦軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q4a" onclick="pick(4,'a')"><span class="ab">A</span><span class="opt">ゴールと期限を決め、逆算でスケジュールを引く</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q4b" onclick="pick(4,'b')"><span class="ab">B</span><span class="opt">テーマだけ決めて、気が向いたときに深めていく</span></button></td>
         </tr>
         <tr>
           <td class="td-q">5</td>
-          <td class="td-theme">仕事での得意なこと<span class="axis-tag h">横軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q5a" onclick="pick(5,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q5b" onclick="pick(5,'b')">B</span></td>
+          <td class="td-theme">仕事の場面で、あなたはどちらが得意ですか？<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q5a" onclick="pick(5,'a')"><span class="ab">A</span><span class="opt">1つの専門領域を深く掘り下げて成果を出すこと</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q5b" onclick="pick(5,'b')"><span class="ab">B</span><span class="opt">複数の分野の知識や人をつなげて解決策を見つけること</span></button></td>
         </tr>
         <tr>
           <td class="td-q">6</td>
-          <td class="td-theme">学んだことを定着させるとき<span class="axis-tag h">横軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q6a" onclick="pick(6,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q6b" onclick="pick(6,'b')">B</span></td>
+          <td class="td-theme">学んだことを定着させるとき、どちらをしたくなる？<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q6a" onclick="pick(6,'a')"><span class="ab">A</span><span class="opt">ノートに整理したり、要点をまとめ直したりする</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q6b" onclick="pick(6,'b')"><span class="ab">B</span><span class="opt">誰かに話したり、SNSや発信を通じてアウトプットする</span></button></td>
         </tr>
         <tr>
           <td class="td-q">7</td>
-          <td class="td-theme">週末に学習時間が取れたら<span class="axis-tag h">横軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q7a" onclick="pick(7,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q7b" onclick="pick(7,'b')">B</span></td>
+          <td class="td-theme">週末に学習時間が取れるとしたら？<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q7a" onclick="pick(7,'a')"><span class="ab">A</span><span class="opt">1つのテーマを集中して進める</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q7b" onclick="pick(7,'b')"><span class="ab">B</span><span class="opt">複数の気になることを少しずつ触れて、刺激を得る</span></button></td>
         </tr>
         <tr>
           <td class="td-q">8</td>
-          <td class="td-theme">新しいテクノロジーへの向き合い方<span class="axis-tag h">横軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q8a" onclick="pick(8,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q8b" onclick="pick(8,'b')">B</span></td>
+          <td class="td-theme">「AI」や「新しいテクノロジー」に対して、あなたはどちらに近い？<span class="axis-tag h">横軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q8a" onclick="pick(8,'a')"><span class="ab">A</span><span class="opt">まず概念・仕組みを理解してから使い方を学びたい</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q8b" onclick="pick(8,'b')"><span class="ab">B</span><span class="opt">とにかく試しながら、使える部分だけ先につかんでいく</span></button></td>
         </tr>
         <tr>
           <td class="td-q">9</td>
-          <td class="td-theme">学習継続の原動力<span class="axis-tag v">縦軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q9a" onclick="pick(9,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q9b" onclick="pick(9,'b')">B</span></td>
+          <td class="td-theme">学習継続の原動力は？<span class="axis-tag v">縦軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q9a" onclick="pick(9,'a')"><span class="ab">A</span><span class="opt">試験・締め切り・評価など、外部のゴールがあると動ける</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q9b" onclick="pick(9,'b')"><span class="ab">B</span><span class="opt">「面白い」「もっと知りたい」という内側から湧く感覚で動く</span></button></td>
         </tr>
         <tr>
           <td class="td-q">10</td>
-          <td class="td-theme">理想の「学んだ状態」のゴール<span class="axis-tag v">縦軸</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q10a" onclick="pick(10,'a')">A</span></td>
-          <td class="td-ab"><span class="choice-btn" id="q10b" onclick="pick(10,'b')">B</span></td>
+          <td class="td-theme">理想の「学んだ状態」のゴールイメージは？<span class="axis-tag v">縦軸</span></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q10a" onclick="pick(10,'a')"><span class="ab">A</span><span class="opt">「転職できる」「資格が取れた」など明確な成果がある状態</span></button></td>
+          <td class="td-ab"><button type="button" class="choice-btn" id="q10b" onclick="pick(10,'b')"><span class="ab">B</span><span class="opt">「自分の考え方が深まった」「新しいつながりが見えた」という実感がある状態</span></button></td>
         </tr>
       </tbody>
     </table>
